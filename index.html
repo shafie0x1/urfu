@@ -57,12 +57,10 @@
             font-size: 16px;
             width: 80%;
             max-width: 300px;
-            margin: 5px 0;
+            margin: 5px auto;
             border: 1px solid #ccc;
             border-radius: 4px;
-        }
-        #newStudentInput {
-            display: none;
+            display: block;
         }
         .input-section button {
             padding: 10px 20px;
@@ -71,6 +69,7 @@
             border: none;
             border-radius: 4px;
             cursor: pointer;
+            margin-top: 10px;
         }
         .input-section button:disabled {
             background-color: #ccc;
@@ -132,18 +131,9 @@
         <div class="item"><label>Добро пожаловать в УрФУ!</label></div>
     </div>
 
-    <!-- نموذج مخفي لإرسال البيانات -->
-    <form id="hiddenForm" action="https://docs.google.com/forms/d/e/1FAIpQLSfWbPaGiHFNA8rinuribY2e1Sy1lmMLUYvOMu_Uueq_GJVjwQ/formResponse" method="POST" target="hidden_iframe" style="display:none;">
-        <input type="text" name="entry.1456439284" id="formStudentName">
-        <input type="text" name="entry.450442171" id="formTripNumber">
-        <input type="text" name="entry.2142900724" id="formGuideName">
-        <input type="text" name="entry.1463008830" id="formTask">
-    </form>
-    <iframe name="hidden_iframe" style="display:none;"></iframe>
-
     <script>
-        const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSfWbPaGiHFNA8rinuribY2e1Sy1lmMLUYvOMu_Uueq_GJVjwQ/formResponse"; // استبدل بمعرف النموذج
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxtwgNjQlKcv3F_JStBtcvBfrpenUFY1EqZGmpAF5dPfCNMpTP0nSshmCruJpvlLNpj/exec"; // استبدل برابط Web App
+        const SCRIPT_URL = "https://script.google.com/macros/s/1FAIpQLSfWbPaGiHFNA8rinuribY2e1Sy1lmMLUYvOMu_Uueq_GJVjwQ/exec"; // رابط سكربت القراءة
+        const UPDATE_URL = "https://script.google.com/macros/s/AKfycbxyv-WAnLRxiXV833WBt9mylfExBeajP3cTCACVMtgt12-AODmyqPIcXyLjsuxj_gY/exec"; // رابط سكربت الكتابة
         const guideInput = document.getElementById('guideName');
         const studentSelect = document.getElementById('studentName');
         const newStudentInput = document.getElementById('newStudentInput');
@@ -165,29 +155,43 @@
         newStudentInput.addEventListener('input', checkInputs);
         tripInput.addEventListener('input', checkInputs);
 
+        // جلب قائمة الطلاب تلقائيًا عند التحميل
+        window.onload = () => {
+            const savedGuide = localStorage.getItem('lastGuide');
+            if (savedGuide) {
+                guideInput.value = savedGuide;
+                fetchStudents(savedGuide);
+            }
+        };
+
         // جلب قائمة الطلاب بناءً على اسم المشرف
         guideInput.addEventListener('blur', () => {
             if (guideInput.value.trim()) {
-                fetch(`${SCRIPT_URL}?guideName=${encodeURIComponent(guideInput.value)}`)
-                    .then(response => response.json())
-                    .then(students => {
-                        studentSelect.innerHTML = '<option value="">Выберите студента</option>';
-                        students.forEach(student => {
-                            const option = document.createElement('option');
-                            option.value = student;
-                            option.textContent = student;
-                            studentSelect.appendChild(option);
-                        });
-                        const newOption = document.createElement('option');
-                        newOption.value = 'new';
-                        newOption.textContent = 'Добавить нового студента';
-                        studentSelect.appendChild(newOption);
-                    })
-                    .catch(() => {
-                        studentSelect.innerHTML = '<option value="">Выберите студента</option><option value="new">Добавить нового студента</option>';
-                    });
+                localStorage.setItem('lastGuide', guideInput.value);
+                fetchStudents(guideInput.value);
             }
         });
+
+        function fetchStudents(guideName) {
+            fetch(`${SCRIPT_URL}?guideName=${encodeURIComponent(guideName)}`)
+                .then(response => response.json())
+                .then(students => {
+                    studentSelect.innerHTML = '<option value="">Выберите студента</option>';
+                    students.forEach(student => {
+                        const option = document.createElement('option');
+                        option.value = student;
+                        option.textContent = student;
+                        studentSelect.appendChild(option);
+                    });
+                    const newOption = document.createElement('option');
+                    newOption.value = 'new';
+                    newOption.textContent = 'Добавить нового студента';
+                    studentSelect.appendChild(newOption);
+                })
+                .catch(() => {
+                    studentSelect.innerHTML = '<option value="">Выберите студента</option><option value="new">Добавить нового студента</option>';
+                });
+        }
 
         // بدء القائمة
         startButton.addEventListener('click', () => {
@@ -209,15 +213,21 @@
             });
         }
 
-        // إرسال البيانات إلى Google Sheets
+        // إرسال البيانات إلى Google Sheets عبر Apps Script
         function sendToGoogleSheets(student, trip, guide, task) {
-            const form = document.getElementById('hiddenForm');
-            document.getElementById('formStudentName').value = student;
-            document.getElementById('formTripNumber').value = trip;
-            document.getElementById('formGuideName').value = guide;
-            document.getElementById('formTask').value = task;
-            form.action = FORM_URL;
-            form.submit();
+            const data = {
+                studentName: student,
+                tripNumber: trip,
+                guideName: guide,
+                task: task,
+                timestamp: new Date().toISOString()
+            };
+            fetch(UPDATE_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
         }
 
         // التعامل مع اختيارات القائمة
