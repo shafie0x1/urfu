@@ -162,8 +162,8 @@
     </div>
 
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxQBOgr2h2K2TirH5QU_Co06Qkxe_IxEK1VclKRqXjokUftHdOy6q9v3lxsBoBEPQwR/exec"; // رابط سكربت القراءة
-        const UPDATE_URL = "https://script.google.com/macros/s/AKfycbyXWDeB0McUWLRYnQMZClpbhxPMfvp9gV2Nop0ZDJafmMQs-nXyoBomSSO8iBxkCaLH/exec"; // رابط سكربت الكتابة
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzqazv5dhaCRsVilZ19r81Xb5ismDtc6w_LsLizX9Iun-4j5JZAdJmceF-GHJ6heq_P/exec"; // رابط سكربت القراءة
+        const UPDATE_URL = "https://script.google.com/macros/s/AKfycby6Vw4hbh53oVNZCxfKf0CJ2VEh6-jSLOq2t6kPocsPkao2uXoPDWKT78mXeJ693Wr5/exec"; // رابط سكربت الكتابة
         const guideInput = document.getElementById('guideName');
         const studentSelect = document.getElementById('studentName');
         const newStudentInput = document.getElementById('newStudentInput');
@@ -206,7 +206,10 @@
         // جلب قائمة الطلاب بناءً على اسم المشرف
         function fetchStudents(guideName) {
             fetch(`${SCRIPT_URL}?guideName=${encodeURIComponent(guideName)}`)
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.json();
+                })
                 .then(data => {
                     studentSelect.innerHTML = '<option value="">Выберите студента</option>';
                     data.students.forEach(student => {
@@ -222,7 +225,8 @@
                     window.tripData = data.trips;
                     window.completedTasksData = data.completedTasks;
                 })
-                .catch(() => {
+                .catch(error => {
+                    console.error('Error fetching students:', error);
                     studentSelect.innerHTML = '<option value="">Выберите студента</option><option value="new">Добавить нового студента</option>';
                 });
         }
@@ -235,9 +239,9 @@
             const storageKey = `checklist_${student}`;
             let progress = JSON.parse(localStorage.getItem(storageKey) || '{}');
             if (window.completedTasksData && window.completedTasksData[student]) {
-                const tasks = window.completedTasksData[student].split(', ');
+                const tasks = window.completedTasksData[student].split(', ').map(task => task.trim());
                 document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-                    const labelText = checkbox.nextElementSibling.textContent;
+                    const labelText = checkbox.nextElementSibling.textContent.trim();
                     if (tasks.includes(labelText)) {
                         progress[checkbox.id] = true;
                     }
@@ -262,9 +266,9 @@
             
             // تحميل المهام المكتملة من الشيت إذا كان الطالب موجودًا
             if (studentSelect.value !== 'new' && window.completedTasksData && window.completedTasksData[student]) {
-                const tasks = window.completedTasksData[student].split(', ');
+                const tasks = window.completedTasksData[student].split(', ').map(task => task.trim());
                 document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-                    const labelText = checkbox.nextElementSibling.textContent;
+                    const labelText = checkbox.nextElementSibling.textContent.trim();
                     if (tasks.includes(labelText)) {
                         progress[checkbox.id] = true;
                     }
@@ -274,8 +278,9 @@
 
             // تحديث واجهة القائمة بناءً على التقدم
             document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-                checkbox.checked = !!progress[checkbox.id];
-                checkbox.nextElementSibling.classList.toggle('completed', checkbox.checked);
+                const isChecked = !!progress[checkbox.id];
+                checkbox.checked = isChecked;
+                checkbox.nextElementSibling.classList.toggle('completed', isChecked);
             });
         }
 
@@ -317,7 +322,7 @@
                 localStorage.setItem(storageKey, JSON.stringify(progress));
                 
                 const completedTasks = Object.keys(progress)
-                    .map(id => document.querySelector(`label[for="${id}"]`).textContent)
+                    .map(id => document.querySelector(`label[for="${id}"]`).textContent.trim())
                     .join(', ');
                 sendToGoogleSheets(student, trip, guide, label.textContent, completedTasks);
             });
