@@ -133,17 +133,17 @@
     </div>
 
     <!-- نموذج مخفي لإرسال البيانات -->
-    <form id="hiddenForm" action="https://docs.google.com/forms/d/e/YOUR_FORM_ID/formResponse" method="POST" target="hidden_iframe" style="display:none;">
-        <input type="text" name="entry.STUDENT_ENTRY_ID" id="formStudentName">
-        <input type="text" name="entry.TRIP_ENTRY_ID" id="formTripNumber">
-        <input type="text" name="entry.GUIDE_ENTRY_ID" id="formGuideName">
-        <input type="text" name="entry.TASK_ENTRY_ID" id="formTask">
+    <form id="hiddenForm" action="https://docs.google.com/forms/d/e/1FAIpQLSfWbPaGiHFNA8rinuribY2e1Sy1lmMLUYvOMu_Uueq_GJVjwQ/formResponse" method="POST" target="hidden_iframe" style="display:none;">
+        <input type="text" name="entry.1456439284" id="formStudentName">
+        <input type="text" name="entry.450442171" id="formTripNumber">
+        <input type="text" name="entry.2142900724" id="formGuideName">
+        <input type="text" name="entry.1463008830" id="formTask">
     </form>
     <iframe name="hidden_iframe" style="display:none;"></iframe>
 
     <script>
-        const FORM_URL = "https://docs.google.com/forms/d/e/YOUR_FORM_ID/formResponse"; // استبدل بمعرف النموذج
-        const SCRIPT_URL = "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec"; // استبدل برابط Web App
+        const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSfWbPaGiHFNA8rinuribY2e1Sy1lmMLUYvOMu_Uueq_GJVjwQ/formResponse"; // استبدل بمعرف النموذج
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxtwgNjQlKcv3F_JStBtcvBfrpenUFY1EqZGmpAF5dPfCNMpTP0nSshmCruJpvlLNpj/exec"; // استبدل برابط Web App
         const guideInput = document.getElementById('guideName');
         const studentSelect = document.getElementById('studentName');
         const newStudentInput = document.getElementById('newStudentInput');
