@@ -6,77 +6,104 @@
     <title>Процесс заселения</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Arial, sans-serif;
             padding: 20px;
-            background-color: #f0f2f5;
-            color: #333;
+            background: linear-gradient(135deg, #e0eafc, #cfdef3);
+            color: #2c3e50;
             direction: ltr;
             text-align: left;
         }
         h1 {
-            font-size: 24px;
-            color: #0088cc;
+            font-size: 28px;
+            color: #3498db;
             text-align: center;
+            margin-bottom: 30px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
         }
         h3 {
-            font-size: 18px;
-            color: #555;
-            margin-top: 20px;
+            font-size: 20px;
+            color: #2980b9;
+            margin-top: 25px;
         }
         .checklist {
-            max-width: 600px;
+            max-width: 700px;
             margin: 0 auto;
             display: none;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
         .item {
             display: flex;
             align-items: center;
-            margin: 10px 0;
-            padding: 10px;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin: 12px 0;
+            padding: 12px;
+            background: #f9f9f9;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        .item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
         .item input[type="checkbox"] {
-            margin-right: 10px;
+            margin-right: 12px;
+            accent-color: #3498db;
         }
         .item label {
             flex: 1;
             font-size: 16px;
+            color: #34495e;
         }
         .completed {
             text-decoration: line-through;
-            color: #888;
+            color: #7f8c8d;
         }
         .input-section {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            max-width: 400px;
+            margin: 0 auto;
         }
         .input-section input, .input-section select {
-            padding: 8px;
+            padding: 10px;
             font-size: 16px;
-            width: 80%;
-            max-width: 300px;
-            margin: 5px auto;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+            width: 85%;
+            margin: 10px auto;
+            border: 2px solid #dcdcdc;
+            border-radius: 8px;
             display: block;
+            transition: border-color 0.3s ease;
+        }
+        .input-section input:focus, .input-section select:focus {
+            border-color: #3498db;
+            outline: none;
         }
         #newStudentInput {
-            display: none; /* إخفاء الحقل افتراضيًا */
+            display: none;
         }
         .input-section button {
-            padding: 10px 20px;
-            background-color: #0088cc;
+            padding: 12px 25px;
+            background: linear-gradient(135deg, #3498db, #2980b9);
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 8px;
             cursor: pointer;
-            margin-top: 10px;
+            margin-top: 15px;
+            transition: transform 0.3s ease;
+        }
+        .input-section button:hover {
+            transform: scale(1.05);
         }
         .input-section button:disabled {
-            background-color: #ccc;
+            background: #bdc3c7;
             cursor: not-allowed;
+            transform: none;
         }
     </style>
 </head>
@@ -89,7 +116,7 @@
             <option value="new">Добавить нового студента</option>
         </select>
         <input type="text" id="newStudentInput" placeholder="Введите имя нового студента">
-        <input type="text" id="tripNumber" placeholder="Введите номер рейса" required>
+        <input type="text" id="tripNumber" placeholder="Введите номер рейса">
         <button id="startChecklist" disabled>Начать</button>
     </div>
     <div class="checklist" id="checklist">
@@ -135,8 +162,8 @@
     </div>
 
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwx1vlDZjHJa3CQuT8ybUb_1qmNXzO8gdLelX1gi1nOqgtWvbNGFnfjeTorneeOAFaA/exec"; // رابط سكربت القراءة
-        const UPDATE_URL = "https://script.google.com/macros/s/AKfycbxSFSTnE5deraKYru1jyYPukdXxPan5WixAmvRjBlBrvZu_5qGxL1nSQ0V6n7S7CJVl/exec"; // رابط سكربت الكتابة
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx2PwUUvr941obdBzzhDYFBntMo4czRh9Sg2hA4Mgiew22OsbZbBkQPj1YBHXtV41eX/exec"; // رابط سكربت القراءة
+        const UPDATE_URL = "https://script.google.com/macros/s/AKfycbz3OPPFVlXWgW1OQjBqTPEtdwzj9qZnJdzSnKc5aYknF8gZtNO3Oh0APgEpmR36AAu2/exec"; // رابط سكربت الكتابة
         const guideInput = document.getElementById('guideName');
         const studentSelect = document.getElementById('studentName');
         const newStudentInput = document.getElementById('newStudentInput');
@@ -148,20 +175,26 @@
         // التحقق من إدخال البيانات
         function checkInputs() {
             const studentValue = studentSelect.value === 'new' ? newStudentInput.value.trim() : studentSelect.value;
-            startButton.disabled = !(guideInput.value.trim() && studentValue && tripInput.value.trim());
+            const isNewStudent = studentSelect.value === 'new';
+            startButton.disabled = !(guideInput.value.trim() && studentValue && (!isNewStudent || tripInput.value.trim()));
         }
         guideInput.addEventListener('input', () => {
             checkInputs();
-            if (guideInput.value.trim()) fetchStudents(guideInput.value); // تحديث الطلاب مع كل تغيير
+            if (guideInput.value.trim()) fetchStudents(guideInput.value);
         });
         studentSelect.addEventListener('change', () => {
             newStudentInput.style.display = studentSelect.value === 'new' ? 'block' : 'none';
+            if (studentSelect.value !== 'new' && studentSelect.value) {
+                fetchTripNumber(studentSelect.value);
+            } else {
+                tripInput.value = '';
+            }
             checkInputs();
         });
         newStudentInput.addEventListener('input', checkInputs);
         tripInput.addEventListener('input', checkInputs);
 
-        // جلب قائمة الطلاب تلقائيًا عند التحميل
+        // جلب قائمة الطلاب ورقم الرحلة عند التحميل
         window.onload = () => {
             const savedGuide = localStorage.getItem('lastGuide');
             if (savedGuide) {
@@ -173,13 +206,10 @@
         // جلب قائمة الطلاب بناءً على اسم المشرف
         function fetchStudents(guideName) {
             fetch(`${SCRIPT_URL}?guideName=${encodeURIComponent(guideName)}`)
-                .then(response => {
-                    if (!response.ok) throw new Error('Network response was not ok');
-                    return response.json();
-                })
-                .then(students => {
+                .then(response => response.json())
+                .then(data => {
                     studentSelect.innerHTML = '<option value="">Выберите студента</option>';
-                    students.forEach(student => {
+                    data.students.forEach(student => {
                         const option = document.createElement('option');
                         option.value = student;
                         option.textContent = student;
@@ -189,11 +219,18 @@
                     newOption.value = 'new';
                     newOption.textContent = 'Добавить нового студента';
                     studentSelect.appendChild(newOption);
+                    window.tripData = data.trips; // تخزين بيانات الرحلات
                 })
-                .catch(error => {
-                    console.error('Error fetching students:', error);
+                .catch(() => {
                     studentSelect.innerHTML = '<option value="">Выберите студента</option><option value="new">Добавить нового студента</option>';
                 });
+        }
+
+        // جلب رقم الرحلة للطالب المختار
+        function fetchTripNumber(student) {
+            if (window.tripData && window.tripData[student]) {
+                tripInput.value = window.tripData[student];
+            }
         }
 
         // بدء القائمة
@@ -210,20 +247,19 @@
             const storageKey = `checklist_${student}`;
             const savedProgress = JSON.parse(localStorage.getItem(storageKey) || '{}');
             document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-                if (savedProgress[checkbox.id]) {
-                    checkbox.checked = true;
-                    checkbox.nextElementSibling.classList.add('completed');
-                }
+                checkbox.checked = !!savedProgress[checkbox.id];
+                checkbox.nextElementSibling.classList.toggle('completed', checkbox.checked);
             });
         }
 
-        // إرسال البيانات إلى Google Sheets عبر Apps Script
-        function sendToGoogleSheets(student, trip, guide, task) {
+        // إرسال البيانات إلى Google Sheets
+        function sendToGoogleSheets(student, trip, guide, task, completedTasks) {
             const data = {
                 studentName: student,
                 tripNumber: trip,
                 guideName: guide,
                 task: task,
+                completedTasks: completedTasks,
                 timestamp: new Date().toISOString()
             };
             fetch(UPDATE_URL, {
@@ -247,12 +283,16 @@
                 if (this.checked) {
                     label.classList.add('completed');
                     progress[this.id] = true;
-                    sendToGoogleSheets(student, trip, guide, label.textContent);
                 } else {
                     label.classList.remove('completed');
                     delete progress[this.id];
                 }
                 localStorage.setItem(storageKey, JSON.stringify(progress));
+                
+                const completedTasks = Object.keys(progress)
+                    .map(id => document.querySelector(`label[for="${id}"]`).textContent)
+                    .join(', ');
+                sendToGoogleSheets(student, trip, guide, label.textContent, completedTasks);
             });
         });
     </script>
