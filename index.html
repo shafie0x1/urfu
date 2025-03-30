@@ -162,8 +162,8 @@
     </div>
 
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx2PwUUvr941obdBzzhDYFBntMo4czRh9Sg2hA4Mgiew22OsbZbBkQPj1YBHXtV41eX/exec"; // رابط سكربت القراءة
-        const UPDATE_URL = "https://script.google.com/macros/s/AKfycbz3OPPFVlXWgW1OQjBqTPEtdwzj9qZnJdzSnKc5aYknF8gZtNO3Oh0APgEpmR36AAu2/exec"; // رابط سكربت الكتابة
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby8S535wiGZpT_8jzcyjSoMYb3nRiBbZdN00n9uUGkyrClkfHdaQNx6iFRzxLKxQPw8/exec"; // رابط سكربت القراءة
+        const UPDATE_URL = "https://script.google.com/macros/s/AKfycbyaypootWJCeY_ZGv5OUJSB9C2avi64owdk4fpnmpS1ZioiL81lGwcR5VFNhDbR9yWZ/exec"; // رابط سكربت الكتابة
         const guideInput = document.getElementById('guideName');
         const studentSelect = document.getElementById('studentName');
         const newStudentInput = document.getElementById('newStudentInput');
@@ -185,7 +185,7 @@
         studentSelect.addEventListener('change', () => {
             newStudentInput.style.display = studentSelect.value === 'new' ? 'block' : 'none';
             if (studentSelect.value !== 'new' && studentSelect.value) {
-                fetchTripNumber(studentSelect.value);
+                fetchTripNumberAndProgress(studentSelect.value);
             } else {
                 tripInput.value = '';
             }
@@ -194,7 +194,7 @@
         newStudentInput.addEventListener('input', checkInputs);
         tripInput.addEventListener('input', checkInputs);
 
-        // جلب قائمة الطلاب ورقم الرحلة عند التحميل
+        // جلب قائمة الطلاب ورقم الرحلة والمهام المكتملة عند التحميل
         window.onload = () => {
             const savedGuide = localStorage.getItem('lastGuide');
             if (savedGuide) {
@@ -219,17 +219,30 @@
                     newOption.value = 'new';
                     newOption.textContent = 'Добавить нового студента';
                     studentSelect.appendChild(newOption);
-                    window.tripData = data.trips; // تخزين بيانات الرحلات
+                    window.tripData = data.trips;
+                    window.completedTasksData = data.completedTasks;
                 })
                 .catch(() => {
                     studentSelect.innerHTML = '<option value="">Выберите студента</option><option value="new">Добавить нового студента</option>';
                 });
         }
 
-        // جلب رقم الرحلة للطالب المختار
-        function fetchTripNumber(student) {
+        // جلب رقم الرحلة والتقدم للطالب المختار
+        function fetchTripNumberAndProgress(student) {
             if (window.tripData && window.tripData[student]) {
                 tripInput.value = window.tripData[student];
+            }
+            if (window.completedTasksData && window.completedTasksData[student]) {
+                const storageKey = `checklist_${student}`;
+                let progress = JSON.parse(localStorage.getItem(storageKey) || '{}');
+                const tasks = window.completedTasksData[student].split(', ');
+                document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                    const labelText = checkbox.nextElementSibling.textContent;
+                    if (tasks.includes(labelText)) {
+                        progress[checkbox.id] = true;
+                    }
+                });
+                localStorage.setItem(storageKey, JSON.stringify(progress));
             }
         }
 
