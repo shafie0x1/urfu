@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Процесс заселения</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f0f2f5;
+            color: #333;
+            direction: ltr;
+            text-align: left;
+        }
+        h1 {
+            font-size: 24px;
+            color: #0088cc;
+            text-align: center;
+        }
+        h3 {
+            font-size: 18px;
+            color: #555;
+            margin-top: 20px;
+        }
+        .checklist {
+            max-width: 600px;
+            margin: 0 auto;
+            display: none;
+        }
+        .item {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .item input[type="checkbox"] {
+            margin-right: 10px;
+        }
+        .item label {
+            flex: 1;
+            font-size: 16px;
+        }
+        .completed {
+            text-decoration: line-through;
+            color: #888;
+        }
+        .input-section {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .input-section input, .input-section select {
+            padding: 8px;
+            font-size: 16px;
+            width: 80%;
+            max-width: 300px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        #newStudentInput {
+            display: none;
+        }
+        .input-section button {
+            padding: 10px 20px;
+            background-color: #0088cc;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .input-section button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <h1>Процесс заселения и оформления документов</h1>
+    <div class="input-section" id="inputSection">
+        <input type="text" id="guideName" placeholder="Введите имя руководителя" required>
+        <select id="studentName" required>
+            <option value="">Выберите студента</option>
+            <option value="new">Добавить нового студента</option>
+        </select>
+        <input type="text" id="newStudentInput" placeholder="Введите имя нового студента">
+        <input type="text" id="tripNumber" placeholder="Введите номер рейса" required>
+        <button id="startChecklist" disabled>Начать</button>
+    </div>
+    <div class="checklist" id="checklist">
+        <h3>🚀 Перед приездом</h3>
+        <div class="item"><input type="checkbox" id="task1"><label for="task1">Записываемся на приезд</label></div>
+        <div class="item"><input type="checkbox" id="task2"><label for="task2">Пишем письмо студенту</label></div>
+        <div class="item"><input type="checkbox" id="task3"><label for="task3">Заказываем такси и едем в аэропорт</label></div>
+
+        <h3>✈️ Встреча и первое заселение</h3>
+        <div class="item"><input type="checkbox" id="task4"><label for="task4">Встречаем студента в аэропорту</label></div>
+        <div class="item"><input type="checkbox" id="task5"><label for="task5">Заселяемся в хостел</label></div>
+
+        <h3>💰 Финансовые и медицинские вопросы</h3>
+        <div class="item"><input type="checkbox" id="task6"><label for="task6">Обмениваем деньги</label></div>
+        <div class="item"><input type="checkbox" id="task7"><label for="task7">Покупаем полис ДМС</label></div>
+        <div class="item"><input type="checkbox" id="task8"><label for="task8">Делаем копии документов</label></div>
+        <div class="item"><input type="checkbox" id="task9"><label for="task9">Проходим медосмотр в медсанчасти</label></div>
+
+        <h3>🎓 Оформление в УрФУ</h3>
+        <div class="item"><input type="checkbox" id="task10"><label for="task10">Зачисляемся в УрФУ</label></div>
+        <div class="item"><input type="checkbox" id="task11"><label for="task11">Получаем договор на общежитие</label></div>
+        <div class="item"><input type="checkbox" id="task12"><label for="task12">Оформляем временную регистрацию</label></div>
+        <div class="item"><input type="checkbox" id="task13"><label for="task13">Заселяемся в общежитие</label></div>
+
+        <h3>📄 Документы и пропуск</h3>
+        <div class="item"><input type="checkbox" id="task14"><label for="task14">Оформляем электронный пропуск</label></div>
+        <div class="item"><input type="checkbox" id="task15"><label for="task15">Делаем перевод паспорта</label></div>
+        <div class="item"><input type="checkbox" id="task16"><label for="task16">Оформляем СНИЛС</label></div>
+        <div class="item"><input type="checkbox" id="task17"><label for="task17">Делаем биометрию</label></div>
+
+        <h3>📶 Связь и госуслуги</h3>
+        <div class="item"><input type="checkbox" id="task18"><label for="task18">Покупаем сим-карту</label></div>
+        <div class="item"><input type="checkbox" id="task19"><label for="task19">Подтверждаем госуслуги</label></div>
+        <div class="item"><input type="checkbox" id="task20"><label for="task20">Подтверждаем сим-карту на госуслугах</label></div>
+
+        <h3>🛂 Виза и финальные шаги</h3>
+        <div class="item"><input type="checkbox" id="task21"><label for="task21">Проходим медицинское освидетельствование</label></div>
+        <div class="item"><input type="checkbox" id="task22"><label for="task22">Продлеваем визу</label></div>
+        <div class="item"><input type="checkbox" id="task23"><label for="task23">Проходим дактилоскопию</label></div>
+
+        <h3>✅ Готово!</h3>
+        <div class="item"><label>Добро пожаловать в УрФУ!</label></div>
+    </div>
+
+    <!-- نموذج مخفي لإرسال البيانات -->
+    <form id="hiddenForm" action="https://docs.google.com/forms/d/e/YOUR_FORM_ID/formResponse" method="POST" target="hidden_iframe" style="display:none;">
+        <input type="text" name="entry.STUDENT_ENTRY_ID" id="formStudentName">
+        <input type="text" name="entry.TRIP_ENTRY_ID" id="formTripNumber">
+        <input type="text" name="entry.GUIDE_ENTRY_ID" id="formGuideName">
+        <input type="text" name="entry.TASK_ENTRY_ID" id="formTask">
+    </form>
+    <iframe name="hidden_iframe" style="display:none;"></iframe>
+
+    <script>
+        const FORM_URL = "https://docs.google.com/forms/d/e/YOUR_FORM_ID/formResponse"; // استبدل بمعرف النموذج
+        const SCRIPT_URL = "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec"; // استبدل برابط Web App
+        const guideInput = document.getElementById('guideName');
+        const studentSelect = document.getElementById('studentName');
+        const newStudentInput = document.getElementById('newStudentInput');
+        const tripInput = document.getElementById('tripNumber');
+        const startButton = document.getElementById('startChecklist');
+        const checklist = document.getElementById('checklist');
+        const inputSection = document.getElementById('inputSection');
+
+        // التحقق من إدخال البيانات
+        function checkInputs() {
+            const studentValue = studentSelect.value === 'new' ? newStudentInput.value.trim() : studentSelect.value;
+            startButton.disabled = !(guideInput.value.trim() && studentValue && tripInput.value.trim());
+        }
+        guideInput.addEventListener('input', checkInputs);
+        studentSelect.addEventListener('change', () => {
+            newStudentInput.style.display = studentSelect.value === 'new' ? 'block' : 'none';
+            checkInputs();
+        });
+        newStudentInput.addEventListener('input', checkInputs);
+        tripInput.addEventListener('input', checkInputs);
+
+        // جلب قائمة الطلاب بناءً على اسم المشرف
+        guideInput.addEventListener('blur', () => {
+            if (guideInput.value.trim()) {
+                fetch(`${SCRIPT_URL}?guideName=${encodeURIComponent(guideInput.value)}`)
+                    .then(response => response.json())
+                    .then(students => {
+                        studentSelect.innerHTML = '<option value="">Выберите студента</option>';
+                        students.forEach(student => {
+                            const option = document.createElement('option');
+                            option.value = student;
+                            option.textContent = student;
+                            studentSelect.appendChild(option);
+                        });
+                        const newOption = document.createElement('option');
+                        newOption.value = 'new';
+                        newOption.textContent = 'Добавить нового студента';
+                        studentSelect.appendChild(newOption);
+                    })
+                    .catch(() => {
+                        studentSelect.innerHTML = '<option value="">Выберите студента</option><option value="new">Добавить нового студента</option>';
+                    });
+            }
+        });
+
+        // بدء القائمة
+        startButton.addEventListener('click', () => {
+            inputSection.style.display = 'none';
+            checklist.style.display = 'block';
+            loadProgress();
+        });
+
+        // تحميل التقدم السابق
+        function loadProgress() {
+            const student = studentSelect.value === 'new' ? newStudentInput.value : studentSelect.value;
+            const storageKey = `checklist_${student}`;
+            const savedProgress = JSON.parse(localStorage.getItem(storageKey) || '{}');
+            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                if (savedProgress[checkbox.id]) {
+                    checkbox.checked = true;
+                    checkbox.nextElementSibling.classList.add('completed');
+                }
+            });
+        }
+
+        // إرسال البيانات إلى Google Sheets
+        function sendToGoogleSheets(student, trip, guide, task) {
+            const form = document.getElementById('hiddenForm');
+            document.getElementById('formStudentName').value = student;
+            document.getElementById('formTripNumber').value = trip;
+            document.getElementById('formGuideName').value = guide;
+            document.getElementById('formTask').value = task;
+            form.action = FORM_URL;
+            form.submit();
+        }
+
+        // التعامل مع اختيارات القائمة
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const label = this.nextElementSibling;
+                const student = studentSelect.value === 'new' ? newStudentInput.value : studentSelect.value;
+                const trip = tripInput.value;
+                const guide = guideInput.value;
+                const storageKey = `checklist_${student}`;
+                let progress = JSON.parse(localStorage.getItem(storageKey) || '{}');
+
+                if (this.checked) {
+                    label.classList.add('completed');
+                    progress[this.id] = true;
+                    sendToGoogleSheets(student, trip, guide, label.textContent);
+                } else {
+                    label.classList.remove('completed');
+                    delete progress[this.id];
+                }
+                localStorage.setItem(storageKey, JSON.stringify(progress));
+            });
+        });
+    </script>
+</body>
+</html>
