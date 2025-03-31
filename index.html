@@ -245,18 +245,6 @@
             if (window.tripData && window.tripData[student]) {
                 tripInput.value = window.tripData[student];
             }
-            const storageKey = `checklist_${student}`;
-            let progress = JSON.parse(localStorage.getItem(storageKey) || '{}');
-            if (window.completedTasksData && window.completedTasksData[student]) {
-                const tasks = window.completedTasksData[student].split(', ').map(task => task.trim());
-                document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-                    const labelText = checkbox.nextElementSibling.textContent.trim();
-                    if (tasks.includes(labelText)) {
-                        progress[checkbox.id] = true;
-                    }
-                });
-                localStorage.setItem(storageKey, JSON.stringify(progress));
-            }
         }
 
         startButton.addEventListener('click', () => {
@@ -271,22 +259,26 @@
             const storageKey = `checklist_${student}`;
             let progress = JSON.parse(localStorage.getItem(storageKey) || '{}');
             
+            // Load completed tasks from Google Sheets if the student is not new
             if (studentSelect.value !== 'new' && window.completedTasksData && window.completedTasksData[student]) {
-                const tasks = window.completedTasksData[student].split(', ').map(task => task.trim());
+                const tasksFromSheet = window.completedTasksData[student].split(', ').map(task => task.trim());
                 document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
                     const labelText = checkbox.nextElementSibling.textContent.trim();
-                    if (tasks.includes(labelText)) {
-                        progress[checkbox.id] = true;
+                    if (tasksFromSheet.includes(labelText)) {
+                        progress[checkbox.id] = true; // Mark as completed based on sheet data
                     }
                 });
-                localStorage.setItem(storageKey, JSON.stringify(progress));
             }
 
+            // Update UI based on merged progress
             document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
                 const isChecked = !!progress[checkbox.id];
                 checkbox.checked = isChecked;
                 checkbox.nextElementSibling.classList.toggle('completed', isChecked);
             });
+
+            // Save merged progress to localStorage
+            localStorage.setItem(storageKey, JSON.stringify(progress));
         }
 
         function sendToGoogleSheets(student, trip, guide, task, completedTasks, photoData) {
@@ -349,14 +341,14 @@
 
             const reader = new FileReader();
             reader.onload = function(e) {
-                const base64Data = e.target.result.split(',')[1]; // Remove data:image/...;base64, prefix
+                const base64Data = e.target.result.split(',')[1];
                 const photoData = {
                     data: base64Data,
                     type: file.type
                 };
                 sendToGoogleSheets(student, trip, guide, '', completedTasks, photoData);
                 alert('Фото успешно отправлено!');
-                photoInput.value = ''; // Clear the input
+                photoInput.value = '';
             };
             reader.readAsDataURL(file);
         });
