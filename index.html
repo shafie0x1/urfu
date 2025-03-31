@@ -56,6 +56,19 @@
             font-size: 16px;
             color: #34495e;
         }
+        .item button.upload-btn {
+            padding: 5px 10px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+            font-size: 14px;
+        }
+        .item button.upload-btn:hover {
+            background: #2980b9;
+        }
         .completed {
             text-decoration: line-through;
             color: #7f8c8d;
@@ -110,60 +123,60 @@
 <body>
     <h1>Buddy System Checklist</h1>
     <div class="input-section" id="inputSection">
-        <input type="text" id="guideName" placeholder="ФИ наставника" required>
+        <input type="text" id="guideName" placeholder="Имя наставника" required>
         <select id="studentName" required>
             <option value="">Выберите студента</option>
             <option value="new">Добавить нового студента</option>
         </select>
         <input type="text" id="newStudentInput" placeholder="Введите имя нового студента">
-        <input type="text" id="tripNumber" placeholder="Введите номер переезда из таблицы">
+        <input type="text" id="tripNumber" placeholder="Введите номер рейса из таблицы">
         <button id="startChecklist" disabled>Начать</button>
     </div>
     <div class="checklist" id="checklist">
         <h3>🚀 Перед приездом</h3>
-        <div class="item"><input type="checkbox" id="task1"><label for="task1">Записываемся на приезд</label></div>
-        <div class="item"><input type="checkbox" id="task2"><label for="task2">Пишем письмо студенту</label></div>
-        <div class="item"><input type="checkbox" id="task3"><label for="task3">Заказываем такси и едем в аэропорт</label></div>
+        <div class="item"><input type="checkbox" id="task1"><label for="task1">Записываемся на приезд</label><input type="file" accept="image/*" style="display:none;" id="file-task1"><button class="upload-btn" onclick="uploadImage('task1')">Загрузить фото</button></div>
+        <div class="item"><input type="checkbox" id="task2"><label for="task2">Пишем письмо студенту</label><input type="file" accept="image/*" style="display:none;" id="file-task2"><button class="upload-btn" onclick="uploadImage('task2')">Загрузить фото</button></div>
+        <div class="item"><input type="checkbox" id="task3"><label for="task3">Заказываем такси и едем в аэропорт</label><input type="file" accept="image/*" style="display:none;" id="file-task3"><button class="upload-btn" onclick="uploadImage('task3')">Загрузить фото</button></div>
 
         <h3>✈️ Встреча и первое заселение</h3>
-        <div class="item"><input type="checkbox" id="task4"><label for="task4">Встречаем студента в аэропорту</label></div>
-        <div class="item"><input type="checkbox" id="task5"><label for="task5">Заселяемся в хостел</label></div>
+        <div class="item"><input type="checkbox" id="task4"><label for="task4">Встречаем студента в аэропорту</label><input type="file" accept="image/*" style="display:none;" id="file-task4"><button class="upload-btn" onclick="uploadImage('task4')">Загрузить фото</button></div>
+        <div class="item"><input type="checkbox" id="task5"><label for="task5">Заселяемся в хостел</label><input type="file" accept="image/*" style="display:none;" id="file-task5"><button class="upload-btn" onclick="uploadImage('task5')">Загрузить фото</button></div>
 
         <h3>💰 Финансовые и медицинские вопросы</h3>
-        <div class="item"><input type="checkbox" id="task6"><label for="task6">Обмениваем деньги</label></div>
-        <div class="item"><input type="checkbox" id="task7"><label for="task7">Покупаем полис ДМС</label></div>
-        <div class="item"><input type="checkbox" id="task8"><label for="task8">Делаем копии документов</label></div>
-        <div class="item"><input type="checkbox" id="task9"><label for="task9">Проходим медосмотр в медсанчасти</label></div>
+        <div class="item"><input type="checkbox" id="task6"><label for="task6">Обмениваем деньги</label><input type="file" accept="image/*" style="display:none;" id="file-task6"><button class="upload-btn" onclick="uploadImage('task6')">Загрузить фото</button></div>
+        <div class="item"><input type="checkbox" id="task7"><label for="task7">Покупаем полис ДМС</label><input type="file" accept="image/*" style="display:none;" id="file-task7"><button class="upload-btn" onclick="uploadImage('task7')">Загрузить фото</button></div>
+        <div class="item"><input type="checkbox" id="task8"><label for="task8">Делаем копии документов</label><input type="file" accept="image/*" style="display:none;" id="file-task8"><button class="upload-btn" onclick="uploadImage('task8')">Загрузить фото</button></div>
+        <div class="item"><input type="checkbox" id="task9"><label for="task9">Проходим медосмотр в медсанчасти</label><input type="file" accept="image/*" style="display:none;" id="file-task9"><button class="upload-btn" onclick="uploadImage('task9')">Загрузить фото</button></div>
 
         <h3>🎓 Оформление в УрФУ</h3>
-        <div class="item"><input type="checkbox" id="task10"><label for="task10">Зачисляемся в УрФУ</label></div>
-        <div class="item"><input type="checkbox" id="task11"><label for="task11">Получаем договор на общежитие</label></div>
-        <div class="item"><input type="checkbox" id="task12"><label for="task12">Оформляем временную регистрацию</label></div>
-        <div class="item"><input type="checkbox" id="task13"><label for="task13">Заселяемся в общежитие</label></div>
+        <div class="item"><input type="checkbox" id="task10"><label for="task10">Зачисляемся в УрФУ</label><input type="file" accept="image/*" style="display:none;" id="file-task10"><button class="upload-btn" onclick="uploadImage('task10')">Загрузить фото</button></div>
+        <div class="item"><input type="checkbox" id="task11"><label for="task11">Получаем договор на общежитие</label><input type="file" accept="image/*" style="display:none;" id="file-task11"><button class="upload-btn" onclick="uploadImage('task11')">Загрузить фото</button></div>
+        <div class="item"><input type="checkbox" id="task12"><label for="task12">Оформляем временную регистрацию</label><input type="file" accept="image/*" style="display:none;" id="file-task12"><button class="upload-btn" onclick="uploadImage('task12')">Загрузить фото</button></div>
+        <div class="item"><input type="checkbox" id="task13"><label for="task13">Заселяемся в общежитие</label><input type="file" accept="image/*" style="display:none;" id="file-task13"><button class="upload-btn" onclick="uploadImage('task13')">Загрузить фото</button></div>
 
         <h3>📄 Документы и пропуск</h3>
-        <div class="item"><input type="checkbox" id="task14"><label for="task14">Оформляем электронный пропуск</label></div>
-        <div class="item"><input type="checkbox" id="task15"><label for="task15">Делаем перевод паспорта</label></div>
-        <div class="item"><input type="checkbox" id="task16"><label for="task16">Оформляем СНИЛС</label></div>
-        <div class="item"><input type="checkbox" id="task17"><label for="task17">Делаем биометрию</label></div>
+        <div class="item"><input type="checkbox" id="task14"><label for="task14">Оформляем электронный пропуск</label><input type="file" accept="image/*" style="display:none;" id="file-task14"><button class="upload-btn" onclick="uploadImage('task14')">Загрузить фото</button></div>
+        <div class="item"><input type="checkbox" id="task15"><label for="task15">Делаем перевод паспорта</label><input type="file" accept="image/*" style="display:none;" id="file-task15"><button class="upload-btn" onclick="uploadImage('task15')">Загрузить фото</button></div>
+        <div class="item"><input type="checkbox" id="task16"><label for="task16">Оформляем СНИЛС</label><input type="file" accept="image/*" style="display:none;" id="file-task16"><button class="upload-btn" onclick="uploadImage('task16')">Загрузить фото</button></div>
+        <div class="item"><input type="checkbox" id="task17"><label for="task17">Делаем биометрию</label><input type="file" accept="image/*" style="display:none;" id="file-task17"><button class="upload-btn" onclick="uploadImage('task17')">Загрузить фото</button></div>
 
         <h3>📶 Связь и госуслуги</h3>
-        <div class="item"><input type="checkbox" id="task18"><label for="task18">Покупаем сим-карту</label></div>
-        <div class="item"><input type="checkbox" id="task19"><label for="task19">Подтверждаем госуслуги</label></div>
-        <div class="item"><input type="checkbox" id="task20"><label for="task20">Подтверждаем сим-карту на госуслугах</label></div>
+        <div class="item"><input type="checkbox" id="task18"><label for="task18">Покупаем сим-карту</label><input type="file" accept="image/*" style="display:none;" id="file-task18"><button class="upload-btn" onclick="uploadImage('task18')">Загрузить фото</button></div>
+        <div class="item"><input type="checkbox" id="task19"><label for="task19">Подтверждаем госуслуги</label><input type="file" accept="image/*" style="display:none;" id="file-task19"><button class="upload-btn" onclick="uploadImage('task19')">Загрузить фото</button></div>
+        <div class="item"><input type="checkbox" id="task20"><label for="task20">Подтверждаем сим-карту на госуслугах</label><input type="file" accept="image/*" style="display:none;" id="file-task20"><button class="upload-btn" onclick="uploadImage('task20')">Загрузить фото</button></div>
 
         <h3>🛂 Виза и финальные шаги</h3>
-        <div class="item"><input type="checkbox" id="task21"><label for="task21">Проходим медицинское освидетельствование</label></div>
-        <div class="item"><input type="checkbox" id="task22"><label for="task22">Продлеваем визу</label></div>
-        <div class="item"><input type="checkbox" id="task23"><label for="task23">Проходим дактилоскопию</label></div>
+        <div class="item"><input type="checkbox" id="task21"><label for="task21">Проходим медицинское освидетельствование</label><input type="file" accept="image/*" style="display:none;" id="file-task21"><button class="upload-btn" onclick="uploadImage('task21')">Загрузить фото</button></div>
+        <div class="item"><input type="checkbox" id="task22"><label for="task22">Продлеваем визу</label><input type="file" accept="image/*" style="display:none;" id="file-task22"><button class="upload-btn" onclick="uploadImage('task22')">Загрузить фото</button></div>
+        <div class="item"><input type="checkbox" id="task23"><label for="task23">Проходим дактилоскопию</label><input type="file" accept="image/*" style="display:none;" id="file-task23"><button class="upload-btn" onclick="uploadImage('task23')">Загрузить фото</button></div>
 
         <h3>✅ Готово!</h3>
         <div class="item"><label>Добро пожаловать в УрФУ!</label></div>
     </div>
 
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzqazv5dhaCRsVilZ19r81Xb5ismDtc6w_LsLizX9Iun-4j5JZAdJmceF-GHJ6heq_P/exec"; // رابط سكربت القراءة
-        const UPDATE_URL = "https://script.google.com/macros/s/AKfycby6Vw4hbh53oVNZCxfKf0CJ2VEh6-jSLOq2t6kPocsPkao2uXoPDWKT78mXeJ693Wr5/exec"; // رابط سكربت الكتابة
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzqazv5dhaCRsVilZ19r81Xb5ismDtc6w_LsLizX9Iun-4j5JZAdJmceF-GHJ6heq_P/exec";
+        const UPDATE_URL = "https://script.google.com/macros/s/AKfycby6Vw4hbh53oVNZCxfKf0CJ2VEh6-jSLOq2t6kPocsPkao2uXoPDWKT78mXeJ693Wr5/exec";
         const guideInput = document.getElementById('guideName');
         const studentSelect = document.getElementById('studentName');
         const newStudentInput = document.getElementById('newStudentInput');
@@ -172,7 +185,6 @@
         const checklist = document.getElementById('checklist');
         const inputSection = document.getElementById('inputSection');
 
-        // التحقق من إدخال البيانات
         function checkInputs() {
             const studentValue = studentSelect.value === 'new' ? newStudentInput.value.trim() : studentSelect.value;
             const isNewStudent = studentSelect.value === 'new';
@@ -194,7 +206,6 @@
         newStudentInput.addEventListener('input', checkInputs);
         tripInput.addEventListener('input', checkInputs);
 
-        // جلب قائمة الطلاب ورقم الرحلة والمهام المكتملة عند التحميل
         window.onload = () => {
             const savedGuide = localStorage.getItem('lastGuide');
             if (savedGuide) {
@@ -203,7 +214,6 @@
             }
         };
 
-        // جلب قائمة الطلاب بناءً على اسم المشرف
         function fetchStudents(guideName) {
             fetch(`${SCRIPT_URL}?guideName=${encodeURIComponent(guideName)}`)
                 .then(response => {
@@ -231,7 +241,6 @@
                 });
         }
 
-        // جلب رقم الرحلة والتقدم للطالب المختار
         function fetchTripNumberAndProgress(student) {
             if (window.tripData && window.tripData[student]) {
                 tripInput.value = window.tripData[student];
@@ -250,7 +259,6 @@
             }
         }
 
-        // بدء القائمة
         startButton.addEventListener('click', () => {
             localStorage.setItem('lastGuide', guideInput.value);
             inputSection.style.display = 'none';
@@ -258,13 +266,11 @@
             loadProgress();
         });
 
-        // تحميل التقدم السابق من localStorage والشيت
         function loadProgress() {
             const student = studentSelect.value === 'new' ? newStudentInput.value : studentSelect.value;
             const storageKey = `checklist_${student}`;
             let progress = JSON.parse(localStorage.getItem(storageKey) || '{}');
             
-            // تحميل المهام المكتملة من الشيت إذا كان الطالب موجودًا
             if (studentSelect.value !== 'new' && window.completedTasksData && window.completedTasksData[student]) {
                 const tasks = window.completedTasksData[student].split(', ').map(task => task.trim());
                 document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
@@ -276,7 +282,6 @@
                 localStorage.setItem(storageKey, JSON.stringify(progress));
             }
 
-            // تحديث واجهة القائمة بناءً على التقدم
             document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
                 const isChecked = !!progress[checkbox.id];
                 checkbox.checked = isChecked;
@@ -284,7 +289,6 @@
             });
         }
 
-        // إرسال البيانات إلى Google Sheets
         function sendToGoogleSheets(student, trip, guide, task, completedTasks) {
             const data = {
                 studentName: student,
@@ -299,10 +303,49 @@
                 mode: 'no-cors',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
-            }).catch(error => console.error('Error sending data:', error));
+            }).catch(error => console.error('Error sending task data:', error));
         }
 
-        // التعامل مع اختيارات القائمة
+        function uploadImage(taskId) {
+            const fileInput = document.getElementById(`file-${taskId}`);
+            fileInput.click();
+            fileInput.onchange = function() {
+                const file = this.files[0];
+                if (file) {
+                    const student = studentSelect.value === 'new' ? newStudentInput.value : studentSelect.value;
+                    const trip = tripInput.value;
+                    const guide = guideInput.value;
+                    const taskLabel = document.querySelector(`label[for="${taskId}"]`).textContent.trim();
+                    sendImageToGoogleSheets(student, trip, guide, taskLabel, file);
+                }
+            };
+        }
+
+        function sendImageToGoogleSheets(student, trip, guide, task, file) {
+            const formData = new FormData();
+            formData.append('studentName', student);
+            formData.append('tripNumber', trip);
+            formData.append('guideName', guide);
+            formData.append('task', task);
+            formData.append('image', file);
+            formData.append('timestamp', new Date().toISOString());
+            fetch(UPDATE_URL, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Фото успешно загружено');
+                } else {
+                    alert('Ошибка при загрузке фото');
+                }
+            })
+            .catch(error => {
+                console.error('Error uploading image:', error);
+                alert('Ошибка при загрузке фото');
+            });
+        }
+
         document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
             checkbox.addEventListener('change', function() {
                 const label = this.nextElementSibling;
