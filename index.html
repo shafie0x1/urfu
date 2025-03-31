@@ -70,7 +70,7 @@
             max-width: 400px;
             margin: 0 auto;
         }
-        .input-section input, .input-section select, .checklist input[type="file"] {
+        .input-section input, .input-section select {
             padding: 10px;
             font-size: 16px;
             width: 85%;
@@ -80,7 +80,7 @@
             display: block;
             transition: border-color 0.3s ease;
         }
-        .input-section input:focus, .input-section select:focus, .checklist input[type="file"]:focus {
+        .input-section input:focus, .input-section select:focus {
             border-color: #3498db;
             outline: none;
         }
@@ -104,6 +104,14 @@
             background: #bdc3c7;
             cursor: not-allowed;
             transform: none;
+        }
+        .photo-upload {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .photo-upload input[type="file"] {
+            display: block;
+            margin: 10px auto;
         }
     </style>
 </head>
@@ -160,14 +168,15 @@
         <h3>✅ Готово!</h3>
         <div class="item"><label>Добро пожаловать в УрФУ!</label></div>
 
-        <h3>📸 Загрузка фото</h3>
-        <input type="file" id="studentPhoto" accept="image/*" placeholder="Загрузите фото студента">
-        <button id="uploadPhoto">Отправить фото</button>
+        <div class="photo-upload">
+            <input type="file" id="studentPhoto" accept="image/*">
+            <button id="uploadPhoto">Отправить фото</button>
+        </div>
     </div>
 
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxfoA9TcFlT4HFfh6jhUrOLsZjP6W5h7VO989JY3225X-FhP9MDW3e8P-urWBgE4Z09/exec"; // استبدل برابط doGet
-        const UPDATE_URL = "https://script.google.com/macros/s/AKfycbyUi8k1wCLm9A-Xch9Xwhx-F5nCe8v7w1mnvbEVhApzTHv9bxxoN_VRnfKHTMzz7EOb/exec"; // استبدل برابط doPost
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzSsQIEgUr_3FJNhd3bTk3J9Ai6gjkV6AlKKkrgadcLjziBCZ0WjJWiCkqAvafECugY/exec";
+        const UPDATE_URL = "https://script.google.com/macros/s/AKfycbwdcq2xGFUWvqaKh6zyS-J8MtjG-gEC_-9Ra5YLgJkwqNMbsM7a1NZN6c2qHqp-N0u2/exec";
         const guideInput = document.getElementById('guideName');
         const studentSelect = document.getElementById('studentName');
         const newStudentInput = document.getElementById('newStudentInput');
@@ -178,12 +187,12 @@
         const photoInput = document.getElementById('studentPhoto');
         const uploadButton = document.getElementById('uploadPhoto');
 
-        // التحقق من إدخال البيانات
         function checkInputs() {
             const studentValue = studentSelect.value === 'new' ? newStudentInput.value.trim() : studentSelect.value;
             const isNewStudent = studentSelect.value === 'new';
             startButton.disabled = !(guideInput.value.trim() && studentValue && (!isNewStudent || tripInput.value.trim()));
         }
+
         guideInput.addEventListener('input', () => {
             checkInputs();
             if (guideInput.value.trim()) fetchStudents(guideInput.value);
@@ -200,7 +209,6 @@
         newStudentInput.addEventListener('input', checkInputs);
         tripInput.addEventListener('input', checkInputs);
 
-        // جلب قائمة الطلاب عند التحميل
         window.onload = () => {
             const savedGuide = localStorage.getItem('lastGuide');
             if (savedGuide) {
@@ -209,7 +217,6 @@
             }
         };
 
-        // جلب قائمة الطلاب بناءً على اسم المشرف
         function fetchStudents(guideName) {
             fetch(`${SCRIPT_URL}?guideName=${encodeURIComponent(guideName)}`)
                 .then(response => response.json())
@@ -234,7 +241,6 @@
                 });
         }
 
-        // جلب رقم الرحلة والتقدم
         function fetchTripNumberAndProgress(student) {
             if (window.tripData && window.tripData[student]) {
                 tripInput.value = window.tripData[student];
@@ -253,7 +259,6 @@
             }
         }
 
-        // بدء القائمة
         startButton.addEventListener('click', () => {
             localStorage.setItem('lastGuide', guideInput.value);
             inputSection.style.display = 'none';
@@ -261,7 +266,6 @@
             loadProgress();
         });
 
-        // تحميل التقدم السابق
         function loadProgress() {
             const student = studentSelect.value === 'new' ? newStudentInput.value : studentSelect.value;
             const storageKey = `checklist_${student}`;
@@ -285,60 +289,24 @@
             });
         }
 
-        // إرسال البيانات إلى Google Sheets
-        function sendToGoogleSheets(student, trip, guide, task, completedTasks, photo = null) {
-            if (photo) {
-                const formData = new FormData();
-                formData.append('studentName', student);
-                formData.append('tripNumber', trip);
-                formData.append('guideName', guide);
-                formData.append('task', task);
-                formData.append('completedTasks', completedTasks);
-                formData.append('timestamp', new Date().toISOString());
-                formData.append('photo', photo);
-
-                console.log('Sending photo data:', {
-                    studentName: student,
-                    tripNumber: trip,
-                    guideName: guide,
-                    task: task,
-                    completedTasks: completedTasks,
-                    photoName: photo.name
-                });
-
-                fetch(UPDATE_URL, {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => {
-                    if (!response.ok) throw new Error('Network response was not ok');
-                    return response.text();
-                })
-                .then(text => console.log('Photo upload response:', text))
-                .catch(error => console.error('Error uploading photo:', error));
-            } else {
-                const data = {
-                    studentName: student,
-                    tripNumber: trip,
-                    guideName: guide,
-                    task: task,
-                    completedTasks: completedTasks,
-                    timestamp: new Date().toISOString()
-                };
-                console.log('Sending text data:', data);
-
-                fetch(UPDATE_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
-                })
-                .then(response => response.text())
-                .then(text => console.log('Text data response:', text))
-                .catch(error => console.error('Error sending data:', error));
-            }
+        function sendToGoogleSheets(student, trip, guide, task, completedTasks, photoData) {
+            const data = {
+                studentName: student,
+                tripNumber: trip,
+                guideName: guide,
+                task: task,
+                completedTasks: completedTasks,
+                timestamp: new Date().toISOString(),
+                photoData: photoData || null
+            };
+            fetch(UPDATE_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            }).catch(error => console.error('Error sending data:', error));
         }
 
-        // التعامل مع اختيارات القائمة
         document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
             checkbox.addEventListener('change', function() {
                 const label = this.nextElementSibling;
@@ -364,23 +332,33 @@
             });
         });
 
-        // التعامل مع رفع الصورة
-        uploadButton.addEventListener('click', function() {
+        uploadButton.addEventListener('click', () => {
+            const file = photoInput.files[0];
+            if (!file) {
+                alert('Пожалуйста, выберите фото!');
+                return;
+            }
             const student = studentSelect.value === 'new' ? newStudentInput.value : studentSelect.value;
             const trip = tripInput.value;
             const guide = guideInput.value;
-            const photo = photoInput.files[0];
             const storageKey = `checklist_${student}`;
             const progress = JSON.parse(localStorage.getItem(storageKey) || '{}');
             const completedTasks = Object.keys(progress)
                 .map(id => document.querySelector(`label[for="${id}"]`).textContent.trim())
                 .join(', ');
 
-            if (photo) {
-                sendToGoogleSheets(student, trip, guide, 'Фото студента загружено', completedTasks, photo);
-            } else {
-                alert('Пожалуйста, выберите фото перед отправкой.');
-            }
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const base64Data = e.target.result.split(',')[1]; // Remove data:image/...;base64, prefix
+                const photoData = {
+                    data: base64Data,
+                    type: file.type
+                };
+                sendToGoogleSheets(student, trip, guide, '', completedTasks, photoData);
+                alert('Фото успешно отправлено!');
+                photoInput.value = ''; // Clear the input
+            };
+            reader.readAsDataURL(file);
         });
     </script>
 </body>
