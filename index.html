@@ -166,8 +166,8 @@
     </div>
 
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzjMwldVbSeXXA6lUvUg_ob5Mq89VJp089RMv0fyTtdL7z1rnVQieg8Q5tPNxfiubh5/exec"; // استبدل برابط doGet
-        const UPDATE_URL = "https://script.google.com/macros/s/AKfycbzSiaf8BXwObafqDWoTaIkcqQrpbDqOlk1to8BKn5bxnrmA-ne5yk_Yyzq4jC0olv4c/exec"; // استبدل برابط doPost
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxfoA9TcFlT4HFfh6jhUrOLsZjP6W5h7VO989JY3225X-FhP9MDW3e8P-urWBgE4Z09/exec"; // استبدل برابط doGet
+        const UPDATE_URL = "https://script.google.com/macros/s/AKfycbyUi8k1wCLm9A-Xch9Xwhx-F5nCe8v7w1mnvbEVhApzTHv9bxxoN_VRnfKHTMzz7EOb/exec"; // استبدل برابط doPost
         const guideInput = document.getElementById('guideName');
         const studentSelect = document.getElementById('studentName');
         const newStudentInput = document.getElementById('newStudentInput');
@@ -297,11 +297,23 @@
                 formData.append('timestamp', new Date().toISOString());
                 formData.append('photo', photo);
 
+                console.log('Sending photo data:', {
+                    studentName: student,
+                    tripNumber: trip,
+                    guideName: guide,
+                    task: task,
+                    completedTasks: completedTasks,
+                    photoName: photo.name
+                });
+
                 fetch(UPDATE_URL, {
                     method: 'POST',
                     body: formData
                 })
-                .then(response => response.text())
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.text();
+                })
                 .then(text => console.log('Photo upload response:', text))
                 .catch(error => console.error('Error uploading photo:', error));
             } else {
@@ -313,6 +325,8 @@
                     completedTasks: completedTasks,
                     timestamp: new Date().toISOString()
                 };
+                console.log('Sending text data:', data);
+
                 fetch(UPDATE_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
