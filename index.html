@@ -165,7 +165,7 @@
         <div class="item"><input type="checkbox" id="task22"><label for="task22">Продлеваем визу</label></div>
         <div class="item"><input type="checkbox" id="task23"><label for="task23">Проходим дактилоскопию</label></div>
 
-                <h3>📸 Фото с ИС</h3>
+        <h3>📸 Фото с ИС</h3>
         <div class="photo-upload">
             <input type="file" id="studentPhoto" accept="image/*">
             <button id="uploadPhoto">Отправить фото</button>
@@ -177,7 +177,7 @@
 
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzSsQIEgUr_3FJNhd3bTk3J9Ai6gjkV6AlKKkrgadcLjziBCZ0WjJWiCkqAvafECugY/exec";
-        const UPDATE_URL = "https://script.google.com/macros/s/AKfycbzKJ0lSuMaKqocf44mta-iHghC-dx3XInWjw7PgouaC_4CuM6Igyi2eMahRbGLjLM4/exec";
+        const UPDATE_URL = "https://script.google.com/macros/s/AKfycbzxMGdCerz_q50nDpl2WcnQtMc5N2BH-7vKegY2Ya572QlkY9vo0PlDKNBpCKz3YyrH/exec";
         const guideInput = document.getElementById('guideName');
         const studentSelect = document.getElementById('studentName');
         const newStudentInput = document.getElementById('newStudentInput');
@@ -300,6 +300,17 @@
             }).catch(error => console.error('Error sending data:', error));
         }
 
+        // دالة debounce لتقليل الطلبات المتتالية
+        function debounce(func, wait) {
+            let timeout;
+            return function(...args) {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(this, args), wait);
+            };
+        }
+
+        const debouncedSendToGoogleSheets = debounce(sendToGoogleSheets, 1000); // تأخير ثانية واحدة
+
         document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
             checkbox.addEventListener('change', function() {
                 const label = this.nextElementSibling;
@@ -321,7 +332,7 @@
                 const completedTasks = Object.keys(progress)
                     .map(id => document.querySelector(`label[for="${id}"]`).textContent.trim())
                     .join(', ');
-                sendToGoogleSheets(student, trip, guide, label.textContent, completedTasks);
+                debouncedSendToGoogleSheets(student, trip, guide, label.textContent, completedTasks);
             });
         });
 
@@ -354,5 +365,6 @@
             reader.readAsDataURL(file);
         });
     </script>
+    <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9295168f0883674b',t:'MTc0MzQ3OTA2OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
 </body>
 </html>
