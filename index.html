@@ -279,7 +279,7 @@
                 guideName: guide,
                 task: task,
                 completedTasks: completedTasks,
-                timestamp: new Date().toISOString(),
+                timestamp: new Date().toLocaleString('ru-RU'), // تعديل الطابع الزمني لصيغة محلية
                 photoData: photoData || null
             };
             fetch(UPDATE_URL, {
