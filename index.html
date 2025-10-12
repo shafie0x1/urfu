@@ -84,9 +84,6 @@
             border-color: #3498db;
             outline: none;
         }
-        #newStudentInput {
-            display: none;
-        }
         .input-section button, .checklist button {
             padding: 12px 25px;
             background: linear-gradient(135deg, #3498db, #2980b9);
@@ -123,7 +120,6 @@
             <option value="">Выберите студента</option>
             
         </select>
-        <input type="text" id="newStudentInput" placeholder="Введите имя нового студента">
         <input type="text" id="tripNumber" placeholder="Введите номер приезда из таблицы" readonly>
         <button id="startChecklist" disabled>Начать</button>
     </div>
@@ -173,7 +169,6 @@
         const UPDATE_URL = "https://script.google.com/macros/s/AKfycbzKJ0lSuMaKqocf44mta-iHghC-dx3XInWjw7PgouaC_4CuM6Igyi2eMahRbGLjLM4/exec";
         const guideInput = document.getElementById('guideName');
         const studentSelect = document.getElementById('studentName');
-        const newStudentInput = document.getElementById('newStudentInput');
         const tripInput = document.getElementById('tripNumber');
         const startButton = document.getElementById('startChecklist');
         const checklist = document.getElementById('checklist');
@@ -182,9 +177,7 @@
         const uploadButton = document.getElementById('uploadPhoto');
 
         function checkInputs() {
-            const studentValue = studentSelect.value === 'new' ? newStudentInput.value.trim() : studentSelect.value;
-            const isNewStudent = studentSelect.value === 'new';
-            startButton.disabled = !(guideInput.value.trim() && studentValue && (!isNewStudent || tripInput.value.trim()));
+            startButton.disabled = !(guideInput.value.trim() && studentSelect.value);
         }
 
         guideInput.addEventListener('input', () => {
@@ -192,16 +185,13 @@
             if (guideInput.value.trim()) fetchStudents(guideInput.value);
         });
         studentSelect.addEventListener('change', () => {
-            newStudentInput.style.display = studentSelect.value === 'new' ? 'block' : 'none';
-            if (studentSelect.value !== 'new' && studentSelect.value) {
+            if (studentSelect.value) {
                 fetchTripNumberAndProgress(studentSelect.value);
             } else {
                 tripInput.value = '';
             }
             checkInputs();
         });
-        newStudentInput.addEventListener('input', checkInputs);
-        tripInput.addEventListener('input', checkInputs);
 
         window.onload = () => {
             const savedGuide = localStorage.getItem('lastGuide');
@@ -222,16 +212,12 @@
                         option.textContent = student;
                         studentSelect.appendChild(option);
                     });
-                    const newOption = document.createElement('option');
-                    newOption.value = 'new';
-                    newOption.textContent = 'Добавить нового студента';
-                    studentSelect.appendChild(newOption);
                     window.tripData = data.trips;
                     window.completedTasksData = data.completedTasks;
                 })
                 .catch(error => {
                     console.error('Error fetching students:', error);
-                    studentSelect.innerHTML = '<option value="">Выберите студента</option><option value="new">Добавить нового студента</option>';
+                    studentSelect.innerHTML = '<option value="">Выберите студента</option>';
                 });
         }
 
@@ -249,11 +235,11 @@
         });
 
         function loadProgress() {
-            const student = studentSelect.value === 'new' ? newStudentInput.value : studentSelect.value;
+            const student = studentSelect.value;
             const storageKey = `checklist_${student}`;
             let progress = JSON.parse(localStorage.getItem(storageKey) || '{}');
             
-            if (studentSelect.value !== 'new' && window.completedTasksData && window.completedTasksData[student]) {
+            if (window.completedTasksData && window.completedTasksData[student]) {
                 const tasksFromSheet = window.completedTasksData[student].split(', ').map(task => task.trim());
                 document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
                     const labelText = checkbox.nextElementSibling.textContent.trim();
@@ -303,7 +289,7 @@
         document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
             checkbox.addEventListener('change', function() {
                 const label = this.nextElementSibling;
-                const student = studentSelect.value === 'new' ? newStudentInput.value : studentSelect.value;
+                const student = studentSelect.value;
                 const trip = tripInput.value;
                 const guide = guideInput.value;
                 const storageKey = `checklist_${student}`;
@@ -331,7 +317,7 @@
                 alert('Пожалуйста, выберите фото!');
                 return;
             }
-            const student = studentSelect.value === 'new' ? newStudentInput.value : studentSelect.value;
+            const student = studentSelect.value;
             const trip = tripInput.value;
             const guide = guideInput.value;
             const storageKey = `checklist_${student}`;
