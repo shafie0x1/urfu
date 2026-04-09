@@ -402,7 +402,7 @@
 
         searchGuideBtn.addEventListener('click', () => {
             const name = guideInput.value.trim();
-            if (!name) { guideSearchStatus.textContent = '⚠️ Введите ФИО'; return; }
+            if (!name) { guideSearchStatus.textContent = '⚠️ Введите ФИ'; return; }
             guideSearchStatus.textContent = '🔍 Поиск...';
             fetchStudents(name);
         });
