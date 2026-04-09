@@ -3,176 +3,396 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Buddy System Checklist</title>
+    <title>Чек-лист наставника</title>
     <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
             font-family: 'Segoe UI', Arial, sans-serif;
             padding: 20px;
-            background: linear-gradient(135deg, #e0eafc, #cfdef3);
-            color: #2c3e50;
-            direction: ltr;
-            text-align: left;
+            background: linear-gradient(135deg, #f7f8f0 0%, #e8f4f8 100%);
+            color: #355872;
+            min-height: 100vh;
         }
+
         h1 {
-            font-size: 28px;
-            color: #3498db;
+            font-size: 30px;
+            color: #355872;
             text-align: center;
             margin-bottom: 30px;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            font-weight: 700;
         }
-        h3 {
-            font-size: 20px;
-            color: #2980b9;
-            margin-top: 25px;
-        }
-        .checklist {
-            max-width: 700px;
-            margin: 0 auto;
-            display: none;
+
+        .main-container { max-width: 700px; margin: 0 auto; }
+
+        .input-section {
             background: white;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            padding: 30px 28px;
+            border-radius: 18px;
+            box-shadow: 0 6px 24px rgba(53, 88, 114, 0.08);
+            max-width: 480px;
+            margin: 0 auto;
         }
+
+        .search-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .search-row input {
+            flex: 1;
+            padding: 12px 16px;
+            font-size: 16px;
+            border: 2px solid #9cd5ff;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            background: #f7f8f0;
+            color: #355872;
+        }
+
+        .search-row input::placeholder { color: #7aaace; }
+
+        .search-row input:focus {
+            border-color: #355872;
+            outline: none;
+            background: white;
+        }
+
+        .btn-search {
+            padding: 12px 22px;
+            background: #355872;
+            color: #f7f8f0;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-search:hover { background: #7aaace; }
+
+        #guideSearchStatus {
+            font-size: 14px;
+            font-weight: 600;
+            color: #355872;
+            text-align: center;
+            margin-bottom: 14px;
+            min-height: 20px;
+        }
+
+        .input-section select,
+        .trip-field {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 15px;
+            border: 2px solid #9cd5ff;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            background: #f7f8f0;
+            color: #355872;
+            transition: all 0.3s ease;
+        }
+
+        .trip-field {
+            text-align: center;
+            color: #7aaace;
+            font-weight: 600;
+            pointer-events: none;
+        }
+
+        .input-section select:focus {
+            border-color: #355872;
+            outline: none;
+            background: white;
+        }
+
+        .btn-start {
+            padding: 14px 36px;
+            background: #9cd5ff;
+            color: #f7f8f0;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            margin: 6px auto;
+            display: block;
+            width: 100%;
+        }
+
+        .btn-start:hover:not(:disabled) { background: #7aaace; }
+        .btn-start:disabled { background: #9cd5ff; opacity: 0.5; cursor: not-allowed; }
+
+        /* Прогресс */
+        .progress-container {
+            background: white;
+            padding: 18px 24px;
+            border-radius: 14px;
+            box-shadow: 0 4px 16px rgba(53, 88, 114, 0.06);
+            margin-bottom: 16px;
+            display: none;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #355872;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: #9cd5ff;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #7aaace, #355872);
+            transition: width 0.4s ease;
+            border-radius: 6px;
+        }
+
+        /* Кнопка назад */
+        .back-button {
+            margin: 0 auto 16px auto;
+            display: none;
+            padding: 8px 20px;
+            background: transparent;
+            color: #355872;
+            border: 2px solid #355872;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover { background: #355872; color: #f7f8f0; }
+
+        /* Чек-лист */
+        .checklist {
+            background: #f7f8f0;
+            padding: 26px;
+            border-radius: 18px;
+            box-shadow: 0 6px 24px rgba(53, 88, 114, 0.08);
+            display: none;
+        }
+
+        .checklist h3 {
+            font-size: 17px;
+            color: #355872;
+            margin-top: 22px;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #9cd5ff;
+            font-weight: 700;
+        }
+
+        .checklist h3:first-child { margin-top: 0; }
+
         .item {
             display: flex;
             align-items: center;
-            margin: 12px 0;
-            padding: 12px;
-            background: #f9f9f9;
+            margin: 8px 0;
+            padding: 12px 14px;
+            background: white;
             border-radius: 10px;
             transition: all 0.3s ease;
+            border-left: 3px solid #7aaace;
+            cursor: pointer;
         }
+
         .item:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transform: translateX(4px);
+            box-shadow: 0 2px 10px rgba(53, 88, 114, 0.08);
+            border-left-color: #355872;
         }
+
+        .item.completed-item {
+            border-left-color: #355872;
+            background: linear-gradient(135deg, #f7f8f0, white);
+        }
+
         .item input[type="checkbox"] {
             margin-right: 12px;
-            accent-color: #3498db;
+            width: 18px;
+            height: 18px;
+            accent-color: #7aaace;
+            cursor: pointer;
+            flex-shrink: 0;
         }
+
         .item label {
             flex: 1;
-            font-size: 16px;
-            color: #34495e;
-        }
-        .completed {
-            text-decoration: line-through;
-            color: #7f8c8d;
-        }
-        .input-section {
-            text-align: center;
-            margin-bottom: 30px;
-            background: white;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            max-width: 400px;
-            margin: 0 auto;
-        }
-        .input-section input, .input-section select {
-            padding: 10px;
-            font-size: 16px;
-            width: 85%;
-            margin: 10px auto;
-            border: 2px solid #dcdcdc;
-            border-radius: 8px;
-            display: block;
-            transition: border-color 0.3s ease;
-        }
-        .input-section input:focus, .input-section select:focus {
-            border-color: #3498db;
-            outline: none;
-        }
-        .input-section button, .checklist button {
-            padding: 12px 25px;
-            background: linear-gradient(135deg, #3498db, #2980b9);
-            color: white;
-            border: none;
-            border-radius: 8px;
+            font-size: 15px;
+            color: #355872;
             cursor: pointer;
-            margin-top: 15px;
-            transition: transform 0.3s ease;
         }
-        .input-section button:hover, .checklist button:hover {
-            transform: scale(1.05);
-        }
-        .input-section button:disabled, .checklist button:disabled {
-            background: #bdc3c7;
-            cursor: not-allowed;
-            transform: none;
-        }
+
+        .completed { text-decoration: line-through; color: #7aaace; }
+
+        /* Фото */
         .photo-upload {
-            margin-top: 20px;
+            margin-top: 22px;
             text-align: center;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            border: 2px dashed #7aaace;
+            transition: all 0.3s ease;
         }
-        .photo-upload input[type="file"] {
-            display: block;
-            margin: 10px auto;
+
+        .photo-upload:hover { border-color: #355872; }
+
+        .photo-upload h3 {
+            margin-bottom: 10px;
+            border: none;
+            padding: 0;
+            font-size: 16px;
+            color: #355872;
+        }
+
+        .photo-upload input[type="file"] { margin: 8px auto; }
+
+        .photo-upload button {
+            padding: 10px 24px;
+            background: #7aaace;
+            color: #f7f8f0;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-top: 8px;
+        }
+
+        .photo-upload button:hover { background: #355872; }
+
+        .final-message {
+            text-align: center;
+            padding: 24px;
+            background: linear-gradient(135deg, #7aaace, #355872);
+            color: #f7f8f0;
+            border-radius: 14px;
+            margin-top: 20px;
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 15px; }
+            h1 { font-size: 24px; }
+            .input-section { padding: 22px 18px; }
+            .search-row { flex-direction: column; }
+            .btn-search { width: 100%; justify-content: center; }
+            .checklist { padding: 18px 14px; }
+            .item { padding: 10px 12px; }
+            .item label { font-size: 14px; }
         }
     </style>
 </head>
 <body>
-    <h1>Buddy System Checklist</h1>
-    <div class="input-section" id="inputSection">
-        <input type="text" id="guideName" placeholder="ФИ наставника" required>
-        <select id="studentName" required>
-            <option value="">Выберите студента</option>
-            
-        </select>
-        <input type="text" id="tripNumber" placeholder="Введите номер приезда из таблицы" readonly>
-        <button id="startChecklist" disabled>Начать</button>
-    </div>
-    <div class="checklist" id="checklist">
-        <h3>✈️ Встреча и первое заселение</h3>
-        <div class="item"><input type="checkbox" id="task1"><label for="task1">Встретить в аэропорту + заселить в хостел</label></div>
+    <div class="main-container">
+        <h1>🎯 Чек-лист наставника</h1>
 
-        <h3>💰 Финансовые и медицинские вопросы</h3>
-        <div class="item"><input type="checkbox" id="task2"><label for="task2">Обменять деньги</label></div>
-        <div class="item"><input type="checkbox" id="task3"><label for="task3">Оформить банковскую карту</label></div>
-        <div class="item"><input type="checkbox" id="task4"><label for="task4">Купить страховку + пройти медосмотр</label></div>
-
-        <h3>🎓 Оформление в УрФУ</h3>
-        <div class="item"><input type="checkbox" id="task5"><label for="task5">Зачислиться в университет</label></div>
-        <div class="item"><input type="checkbox" id="task6"><label for="task6">Получить ордер + регистрацию в общежитии</label></div>
-        <div class="item"><input type="checkbox" id="task7"><label for="task7">Заселиться в общежитие</label></div>
-        <div class="item"><input type="checkbox" id="task8"><label for="task8">Оформить студенческий билет</label></div>
-
-        <h3>📄 Документы и пропуск</h3>
-        <div class="item"><input type="checkbox" id="task9"><label for="task9">Получить СНИЛС</label></div>
-        <div class="item"><input type="checkbox" id="task10"><label for="task10">Перевести паспорт</label></div>
-        <div class="item"><input type="checkbox" id="task11"><label for="task11">Оформить электронный пропуск</label></div>
-
-        <h3>📶 Связь и госуслуги</h3>
-        <div class="item"><input type="checkbox" id="task12"><label for="task12">Купить сим-карту</label></div>
-        <div class="item"><input type="checkbox" id="task13"><label for="task13">Зарегистрироваться на Госуслугах</label></div>
-        <div class="item"><input type="checkbox" id="task14"><label for="task14">Зарегистрировать биометрию</label></div>
-
-        <h3>🛂 Виза и финальные шаги</h3>
-        <div class="item"><input type="checkbox" id="task15"><label for="task15">Пройти медосвидетельствование</label></div>
-        <div class="item"><input type="checkbox" id="task16"><label for="task16">Пройти дактилоскопию</label></div>
-        <div class="item"><input type="checkbox" id="task17"><label for="task17">Продлить визу</label></div>
-
-        <h3>📸 Фото с ИС</h3>
-        <div class="item"><input type="checkbox" id="task18"><label for="task18">Сделать фото с ИС</label></div>
-        <div class="photo-upload">
-            <input type="file" id="studentPhoto" accept="image/*">
-            <button id="uploadPhoto">Отправить фото</button>
+        <div class="input-section" id="inputSection">
+            <div class="search-row">
+                <input type="text" id="guideName" placeholder="ФИО наставника" required>
+                <button id="searchGuide" class="btn-search">🔍 Найти</button>
+            </div>
+            <div id="guideSearchStatus"></div>
+            <select id="studentName" required>
+                <option value="">Выберите студента</option>
+            </select>
+            <input type="text" id="tripNumber" class="trip-field" placeholder="Номер приезда" readonly>
+            <button id="startChecklist" class="btn-start" disabled>Начать чек-лист</button>
         </div>
-        
-        <h3>✅ Готово!</h3>
-        <div class="item"><label>Добро пожаловать в УрФУ!</label></div>
+
+        <div class="progress-container" id="progressContainer">
+            <div class="progress-header">
+                <span>📊 Прогресс</span>
+                <span id="progressText">0%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <button class="back-button" id="backButton" style="display: none;">← Вернуться</button>
+
+        <div class="checklist" id="checklist">
+            <h3>✈️ Встреча и первое заселение</h3>
+            <div class="item"><input type="checkbox" id="task1"><label for="task1">Встретить в аэропорту + заселить в хостел</label></div>
+
+            <h3>💰 Финансовые и медицинские вопросы</h3>
+            <div class="item"><input type="checkbox" id="task2"><label for="task2">Обменять деньги</label></div>
+            <div class="item"><input type="checkbox" id="task3"><label for="task3">Оформить банковскую карту</label></div>
+            <div class="item"><input type="checkbox" id="task4"><label for="task4">Купить страховку + пройти медосмотр</label></div>
+
+            <h3>🎓 Оформление в УрФУ</h3>
+            <div class="item"><input type="checkbox" id="task5"><label for="task5">Зачислиться в университет</label></div>
+            <div class="item"><input type="checkbox" id="task6"><label for="task6">Получить ордер + регистрацию в общежитии</label></div>
+            <div class="item"><input type="checkbox" id="task7"><label for="task7">Заселиться в общежитие</label></div>
+            <div class="item"><input type="checkbox" id="task8"><label for="task8">Оформить студенческий билет</label></div>
+
+            <h3>📄 Документы и пропуск</h3>
+            <div class="item"><input type="checkbox" id="task9"><label for="task9">Получить СНИЛС</label></div>
+            <div class="item"><input type="checkbox" id="task10"><label for="task10">Перевести паспорт</label></div>
+            <div class="item"><input type="checkbox" id="task11"><label for="task11">Оформить электронный пропуск</label></div>
+
+            <h3>📶 Связь и госуслуги</h3>
+            <div class="item"><input type="checkbox" id="task12"><label for="task12">Купить сим-карту</label></div>
+            <div class="item"><input type="checkbox" id="task13"><label for="task13">Зарегистрироваться на Госуслугах</label></div>
+            <div class="item"><input type="checkbox" id="task14"><label for="task14">Зарегистрировать биометрию</label></div>
+
+            <h3>🛂 Виза и финальные шаги</h3>
+            <div class="item"><input type="checkbox" id="task15"><label for="task15">Пройти медосвидетельствование</label></div>
+            <div class="item"><input type="checkbox" id="task16"><label for="task16">Пройти дактилоскопию</label></div>
+            <div class="item"><input type="checkbox" id="task17"><label for="task17">Продлить визу</label></div>
+
+            <h3>📸 Фото с ИС</h3>
+            <div class="item"><input type="checkbox" id="task18"><label for="task18">Сделать фото с ИС</label></div>
+
+            <div class="photo-upload">
+                <h3>📷 Загрузить фото студента</h3>
+                <input type="file" id="studentPhoto" accept="image/*">
+                <button id="uploadPhoto">Отправить фото</button>
+            </div>
+
+            <div class="final-message">🎉 Добро пожаловать в УрФУ!</div>
+        </div>
     </div>
 
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzSsQIEgUr_3FJNhd3bTk3J9Ai6gjkV6AlKKkrgadcLjziBCZ0WjJWiCkqAvafECugY/exec";
         const UPDATE_URL = "https://script.google.com/macros/s/AKfycbzKJ0lSuMaKqocf44mta-iHghC-dx3XInWjw7PgouaC_4CuM6Igyi2eMahRbGLjLM4/exec";
+
         const guideInput = document.getElementById('guideName');
+        const searchGuideBtn = document.getElementById('searchGuide');
+        const guideSearchStatus = document.getElementById('guideSearchStatus');
         const studentSelect = document.getElementById('studentName');
         const tripInput = document.getElementById('tripNumber');
         const startButton = document.getElementById('startChecklist');
         const checklist = document.getElementById('checklist');
         const inputSection = document.getElementById('inputSection');
+        const progressContainer = document.getElementById('progressContainer');
+        const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
+        const backButton = document.getElementById('backButton');
         const photoInput = document.getElementById('studentPhoto');
         const uploadButton = document.getElementById('uploadPhoto');
 
@@ -180,48 +400,53 @@
             startButton.disabled = !(guideInput.value.trim() && studentSelect.value);
         }
 
-        guideInput.addEventListener('input', () => {
-            checkInputs();
-            if (guideInput.value.trim()) fetchStudents(guideInput.value);
+        searchGuideBtn.addEventListener('click', () => {
+            const name = guideInput.value.trim();
+            if (!name) { guideSearchStatus.textContent = '⚠️ Введите ФИО'; return; }
+            guideSearchStatus.textContent = '🔍 Поиск...';
+            fetchStudents(name);
         });
+
+        guideInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') searchGuideBtn.click(); });
+
         studentSelect.addEventListener('change', () => {
-            if (studentSelect.value) {
-                fetchTripNumberAndProgress(studentSelect.value);
-            } else {
-                tripInput.value = '';
-            }
+            if (studentSelect.value) { fetchTripNumber(studentSelect.value); }
+            else { tripInput.value = ''; }
             checkInputs();
         });
 
         window.onload = () => {
             const savedGuide = localStorage.getItem('lastGuide');
-            if (savedGuide) {
-                guideInput.value = savedGuide;
-                fetchStudents(savedGuide);
-            }
+            if (savedGuide) { guideInput.value = savedGuide; fetchStudents(savedGuide); }
         };
 
         function fetchStudents(guideName) {
             fetch(`${SCRIPT_URL}?guideName=${encodeURIComponent(guideName)}`)
-                .then(response => response.json())
+                .then(r => r.json())
                 .then(data => {
                     studentSelect.innerHTML = '<option value="">Выберите студента</option>';
-                    data.students.forEach(student => {
-                        const option = document.createElement('option');
-                        option.value = student;
-                        option.textContent = student;
-                        studentSelect.appendChild(option);
-                    });
+                    if (data.students && data.students.length > 0) {
+                        guideSearchStatus.textContent = `✅ Найдено: ${data.students.length} студент(ов)`;
+                        data.students.forEach(student => {
+                            const opt = document.createElement('option');
+                            opt.value = student;
+                            opt.textContent = student;
+                            studentSelect.appendChild(opt);
+                        });
+                    } else {
+                        guideSearchStatus.textContent = '❌ Наставник не найден';
+                    }
                     window.tripData = data.trips;
                     window.completedTasksData = data.completedTasks;
                 })
                 .catch(error => {
-                    console.error('Error fetching students:', error);
+                    console.error('Error:', error);
+                    guideSearchStatus.textContent = '❌ Ошибка поиска';
                     studentSelect.innerHTML = '<option value="">Выберите студента</option>';
                 });
         }
 
-        function fetchTripNumberAndProgress(student) {
+        function fetchTripNumber(student) {
             if (window.tripData && window.tripData[student]) {
                 tripInput.value = window.tripData[student];
             }
@@ -231,41 +456,65 @@
             localStorage.setItem('lastGuide', guideInput.value);
             inputSection.style.display = 'none';
             checklist.style.display = 'block';
+            progressContainer.style.display = 'block';
+            backButton.style.display = 'block';
             loadProgress();
+        });
+
+        backButton.addEventListener('click', () => {
+            document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                cb.checked = false;
+                cb.nextElementSibling.classList.remove('completed');
+                cb.closest('.item').classList.remove('completed-item');
+            });
+            checklist.style.display = 'none';
+            progressContainer.style.display = 'none';
+            backButton.style.display = 'none';
+            inputSection.style.display = 'block';
         });
 
         function loadProgress() {
             const student = studentSelect.value;
-            const storageKey = `checklist_${student}`;
-            let progress = JSON.parse(localStorage.getItem(storageKey) || '{}');
-            
+            const key = `checklist_${student}`;
+            let progress = JSON.parse(localStorage.getItem(key) || '{}');
+
             if (window.completedTasksData && window.completedTasksData[student]) {
-                const tasksFromSheet = window.completedTasksData[student].split(', ').map(task => task.trim());
-                document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-                    const labelText = checkbox.nextElementSibling.textContent.trim();
-                    if (tasksFromSheet.includes(labelText)) {
-                        progress[checkbox.id] = true;
+                const tasks = window.completedTasksData[student].split(', ').map(t => t.trim());
+                document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                    if (tasks.includes(cb.nextElementSibling.textContent.trim())) {
+                        progress[cb.id] = true;
                     }
                 });
             }
 
-            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-                const isChecked = !!progress[checkbox.id];
-                checkbox.checked = isChecked;
-                checkbox.nextElementSibling.classList.toggle('completed', isChecked);
+            document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                const checked = !!progress[cb.id];
+                cb.checked = checked;
+                cb.nextElementSibling.classList.toggle('completed', checked);
+                cb.closest('.item').classList.toggle('completed-item', checked);
             });
 
-            localStorage.setItem(storageKey, JSON.stringify(progress));
+            localStorage.setItem(key, JSON.stringify(progress));
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const total = document.querySelectorAll('input[type="checkbox"]').length;
+            const done = document.querySelectorAll('input[type="checkbox"]:checked').length;
+            const pct = Math.round((done / total) * 100);
+            progressFill.style.width = pct + '%';
+            progressText.textContent = `${pct}% (${done}/${total})`;
         }
 
         function sendToGoogleSheets(student, trip, guide, task, completedTasks, photoData) {
+            const tripStr = trip ? trip + ' ' : '';
             const data = {
                 studentName: student,
-                tripNumber: trip,
+                tripNumber: tripStr,
                 guideName: guide,
                 task: task,
                 completedTasks: completedTasks,
-                timestamp: new Date().toLocaleString('ru-RU'), // تعديل الطابع الزمني لصيغة محلية
+                timestamp: new Date().toLocaleString('ru-RU'),
                 photoData: photoData || null
             };
             fetch(UPDATE_URL, {
@@ -273,55 +522,52 @@
                 mode: 'no-cors',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
-            }).catch(error => console.error('Error sending data:', error));
+            }).catch(error => console.error('Error:', error));
         }
 
         function debounce(func, wait) {
             let timeout;
-            return function(...args) {
-                clearTimeout(timeout);
-                timeout = setTimeout(() => func.apply(this, args), wait);
-            };
+            return function(...args) { clearTimeout(timeout); timeout = setTimeout(() => func.apply(this, args), wait); };
         }
 
-        const debouncedSendToGoogleSheets = debounce(sendToGoogleSheets, 1000);
+        const debouncedSend = debounce(sendToGoogleSheets, 1000);
 
-        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-            checkbox.addEventListener('change', function() {
+        document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+            cb.addEventListener('change', function() {
                 const label = this.nextElementSibling;
                 const student = studentSelect.value;
                 const trip = tripInput.value;
                 const guide = guideInput.value;
-                const storageKey = `checklist_${student}`;
-                let progress = JSON.parse(localStorage.getItem(storageKey) || '{}');
+                const key = `checklist_${student}`;
+                let progress = JSON.parse(localStorage.getItem(key) || '{}');
 
                 if (this.checked) {
                     label.classList.add('completed');
+                    this.closest('.item').classList.add('completed-item');
                     progress[this.id] = true;
                 } else {
                     label.classList.remove('completed');
+                    this.closest('.item').classList.remove('completed-item');
                     delete progress[this.id];
                 }
-                localStorage.setItem(storageKey, JSON.stringify(progress));
-                
+                localStorage.setItem(key, JSON.stringify(progress));
+                updateProgress();
+
                 const completedTasks = Object.keys(progress)
                     .map(id => document.querySelector(`label[for="${id}"]`).textContent.trim())
                     .join(', ');
-                debouncedSendToGoogleSheets(student, trip, guide, label.textContent, completedTasks);
+                debouncedSend(student, trip, guide, label.textContent, completedTasks);
             });
         });
 
         uploadButton.addEventListener('click', () => {
             const file = photoInput.files[0];
-            if (!file) {
-                alert('Пожалуйста, выберите фото!');
-                return;
-            }
+            if (!file) return alert('Выберите фото!');
             const student = studentSelect.value;
             const trip = tripInput.value;
             const guide = guideInput.value;
-            const storageKey = `checklist_${student}`;
-            const progress = JSON.parse(localStorage.getItem(storageKey) || '{}');
+            const key = `checklist_${student}`;
+            const progress = JSON.parse(localStorage.getItem(key) || '{}');
             const completedTasks = Object.keys(progress)
                 .map(id => document.querySelector(`label[for="${id}"]`).textContent.trim())
                 .join(', ');
@@ -329,18 +575,12 @@
             const reader = new FileReader();
             reader.onload = function(e) {
                 const base64Data = e.target.result.split(',')[1];
-                const photoData = {
-                    data: base64Data,
-                    type: file.type
-                };
-                sendToGoogleSheets(student, trip, guide, '', completedTasks, photoData);
-                alert('Фото успешно отправлено!');
+                sendToGoogleSheets(student, trip, guide, '', completedTasks, { data: base64Data, type: file.type });
+                alert('Фото отправлено!');
                 photoInput.value = '';
             };
             reader.readAsDataURL(file);
         });
     </script>
-    <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9295168f0883674b',t:'MTc0MzQ3OTA2OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
-    <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9296a1931fe1672f',t:'MTc0MzQ5NTI0Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
 </body>
 </html>
